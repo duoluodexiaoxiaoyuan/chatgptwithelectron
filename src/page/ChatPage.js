@@ -1,8 +1,10 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Input, Button, Avatar, message, Drawer, Select, Image } from 'antd';
+import { Input, Button, Avatar, message, Drawer, Select, Image, Modal } from 'antd';
+import ReactMarkdown from 'react-markdown';
 import { UserOutlined, RobotOutlined } from '@ant-design/icons';
 import axios from 'axios';
 import { useHistory } from 'react-router-dom';
+import ChatContent from '../components/ChatContent';
 const ChatPage = () => {
   const [inputValue, setInputValue] = useState('');
   const [chatHistory, setChatHistory] = useState([]);
@@ -10,6 +12,8 @@ const ChatPage = () => {
   const [botModel, setBotModel] = useState('chatBot')
   const [picSize, setPicSize] = useState('512x512')
   const [picCount, setPicCount] = useState('1')
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [textToCopy, setTextToCopy] = useState('')
   const chatEndRef = useRef(null);
   const history = useHistory();
 
@@ -20,6 +24,20 @@ const ChatPage = () => {
       chatEndRef.current.scrollIntoView({ behavior: 'smooth' });
     }
   }, [chatHistory]);
+
+  const handleOk = () => {
+    setIsModalOpen(false);
+     navigator.clipboard.writeText(textToCopy)
+      .then(() => {
+        message.success('复制成功');
+      })
+      .catch((error) => {
+        message.error('复制失败', error);
+      });
+  };
+  const handleCancel = () => {
+    setIsModalOpen(false);
+  };
 
   const handleInputChange = (e) => {
     setInputValue(e.target.value);
@@ -125,14 +143,9 @@ const ChatPage = () => {
 
   // 复制内容
   const copyContent = (event) => {
-    const textToCopy = event.target.textContent;
-    navigator.clipboard.writeText(textToCopy)
-      .then(() => {
-        message.success('复制成功');
-      })
-      .catch((error) => {
-        message.error('复制失败', error);
-      });
+    if (botModel === 'uiBot') return
+    setTextToCopy(event.target.textContent)
+    setIsModalOpen(true);
   }
 
   return (
@@ -177,6 +190,9 @@ const ChatPage = () => {
           setPicCount(event.target.value)
         }}/>
       </Drawer>
+      <Modal title="可以进行内容复制" open={isModalOpen} onOk={handleOk} onCancel={handleCancel}>
+         {textToCopy}
+      </Modal>
       <div
         style={{
           height: '400px',
@@ -225,9 +241,8 @@ const ChatPage = () => {
                   message && message.message  && message.message.map((item,index) => {
                     return <Image width={200} src={item.url} key={index} />
                   })
-                  // JSON.stringify(message.message)
                 ) : (
-                  Array.isArray(message.message) ? '是图片，需要查看请切换到uiBot模式' : message.message
+                  Array.isArray(message.message) ? '是图片，需要查看请切换到uiBot模式' : <ChatContent message={message.message}/>
                 )}
               </div>
             </div>
