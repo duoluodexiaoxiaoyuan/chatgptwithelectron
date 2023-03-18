@@ -195,7 +195,7 @@ const ChatPage = () => {
       </Modal>
       <div
         style={{
-          height: '400px',
+          height: '550px',
           width: '80%',
           marginTop: '50px',
           padding: '20px',
