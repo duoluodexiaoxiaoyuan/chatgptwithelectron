@@ -17,3 +17,7 @@ win.loadURL('http://localhost:3000/')   // 本地开发打开这个
 win.loadURL(`file://${path.join(__dirname, '../build/index.html')}`)  // 打包构建electron打开
 
 npm run electron-start
+
+### ✨20230321
+1.默认是不关联上下文的
+2.支持勾选上下文，同时勾选上下文以后假如之前的记录没有什么关联支持页面重新加载

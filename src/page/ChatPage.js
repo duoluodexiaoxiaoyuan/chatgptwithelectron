@@ -45,9 +45,10 @@ const ChatPage = () => {
       localStorage.setItem("associationContextLocalStorage", 0);
     }
 
-    if (localStorage.getItem('reloadPageLocalStorage') === 'true' || localStorage.getItem('reloadPageLocalStorage') === 'false') {
+    if (localStorage.getItem('reloadPageLocalStorage') === 'false') {
       setReloadPage(Boolean(localStorage.getItem('reloadPageLocalStorage')))
     } else {
+      setReloadPage(false)
       localStorage.setItem("reloadPageLocalStorage", false);
     }
   }, [])
