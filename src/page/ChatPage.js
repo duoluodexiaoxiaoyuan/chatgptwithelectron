@@ -8,6 +8,7 @@ import {
   Select,
   Image,
   Modal,
+  Checkbox
 } from 'antd';
 import ReactMarkdown from 'react-markdown';
 import { UserOutlined, RobotOutlined } from '@ant-design/icons';
@@ -24,6 +25,7 @@ const ChatPage = () => {
   const [picCount, setPicCount] = useState('1');
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [textToCopy, setTextToCopy] = useState('');
+  const [reloadPage, setReloadPage] = useState(false); // 关联上下文是否需要重新加载页面
   const chatEndRef = useRef(null);
   const history = useHistory();
 
@@ -37,7 +39,17 @@ const ChatPage = () => {
 
   // 默认是不关联上下文的，节省token
   useEffect(() => {
-    localStorage.setItem("associationContextLocalStorage", 0);
+    if (localStorage.getItem('associationContextLocalStorage') === '0' || localStorage.getItem('associationContextLocalStorage') === '1') {
+      
+    } else {
+      localStorage.setItem("associationContextLocalStorage", 0);
+    }
+
+    if (localStorage.getItem('reloadPageLocalStorage') === 'true' || localStorage.getItem('reloadPageLocalStorage') === 'false') {
+      setReloadPage(Boolean(localStorage.getItem('reloadPageLocalStorage')))
+    } else {
+      localStorage.setItem("reloadPageLocalStorage", false);
+    }
   }, [])
 
   const handleOk = () => {
@@ -240,15 +252,27 @@ const ChatPage = () => {
             setPicCount(event.target.value);
           }}
         />
-        请选择是否需要进行关联上下文:<Select defaultValue="0" placeholder="请选择是否需要进行关联上下文" 
+        请选择是否需要进行关联上下文:<Select defaultValue={localStorage.getItem('associationContextLocalStorage')} placeholder="请选择是否需要进行关联上下文" 
           onChange={(value) => {
             console.log(value)
             localStorage.setItem("associationContextLocalStorage", value);
+            console.log(reloadPage);
+            if(reloadPage && value === '1') {
+              window.location.reload()
+            }
           }}
         > 
           <Option value="1">是</Option> 
           <Option value="0">否</Option> 
         </Select>
+        <Checkbox onChange={(e) => {
+          console.log(e.target.checked)
+          setReloadPage(e.target.checked)
+          localStorage.setItem("reloadPageLocalStorage", e.target.checked);
+          if (e.target.checked === true && localStorage.getItem('associationContextLocalStorage') === '1') {
+            window.location.reload()
+          }
+        }} checked={reloadPage}>关联上下文以后是否需要重新加载页面</Checkbox>
 
       </Drawer>
       <Modal
