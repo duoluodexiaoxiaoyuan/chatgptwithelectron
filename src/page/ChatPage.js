@@ -44,13 +44,8 @@ const ChatPage = () => {
     } else {
       localStorage.setItem("associationContextLocalStorage", 0);
     }
-
-    if (localStorage.getItem('reloadPageLocalStorage') === 'false') {
-      setReloadPage(Boolean(localStorage.getItem('reloadPageLocalStorage')))
-    } else {
-      setReloadPage(false)
-      localStorage.setItem("reloadPageLocalStorage", false);
-    }
+    setReloadPage(false)
+    localStorage.setItem("reloadPageLocalStorage", false);
   }, [])
 
   const handleOk = () => {
@@ -286,7 +281,7 @@ const ChatPage = () => {
       </Modal>
       <div
         style={{
-          height: '500px',
+          height: '600px',
           width: '80%',
           marginTop: '50px',
           padding: '20px',
