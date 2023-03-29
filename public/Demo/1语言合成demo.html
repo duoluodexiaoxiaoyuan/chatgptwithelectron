@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Speech Synthesis Demo</title>
+</head>
+<body>
+    <h1>Speech Synthesis Demo</h1>
+    <textarea id="text" placeholder="请输入要转换成语音的文本"></textarea>
+    <br>
+    <button id="speakBtn" onclick="speak()">开始语音合成</button>
+    <button id="pauseBtn" onclick="pause()">暂停语音合成</button>
+    <button id="resumeBtn" onclick="resume()">继续语音合成</button>
+    <button id="cancelBtn" onclick="cancel()">停止语音合成</button>
+    <script>
+        // 获取DOM元素
+        const textEl = document.getElementById('text');
+        const speakBtn = document.getElementById('speakBtn');
+        const pauseBtn = document.getElementById('pauseBtn');
+        const resumeBtn = document.getElementById('resumeBtn');
+        const cancelBtn = document.getElementById('cancelBtn');
+    // 初始化SpeechSynthesis对象
+    const synth = window.speechSynthesis;
+
+    // 定义语音合成函数
+    function speak() {
+        // 判断是否正在进行语音合成
+        if (synth.speaking) {
+            console.error('语音合成正在进行中，无法开始新的语音合成')
+            return;
+        } 
+        console.log(textEl.value.trim())
+        // 创建SpeechSynthesisUtterance对象
+        const utterance = new SpeechSynthesisUtterance(textEl.value.trim());
+        
+        // 设置语音属性
+        utterance.pitch = 1; // 音调
+        utterance.rate = 1; // 语速
+        utterance.volume = 1; // 音量
+
+        // 播放语音合成
+        synth.speak(utterance);
+    }
+
+    // 定义暂停语音合成函数
+    function pause() {
+        if (synth.speaking) {
+            synth.pause();
+        }
+    }
+
+    // 定义继续语音合成函数
+    function resume() {
+        if (synth.paused) {
+            synth.resume();
+        }
+    }
+
+    // 定义停止语音合成函数
+    function cancel() {
+        synth.cancel();
+    }
+
+    // 监听语音合成的事件
+    synth.onvoiceschanged = function() {
+        console.log(synth.getVoices()); // 打印支持的语音列表
+    };
+</script>
+
+</body>
+</html> 
